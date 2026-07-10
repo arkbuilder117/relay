@@ -1,0 +1,16 @@
+<nav class="bg-white border-b border-gray-200 px-4 py-3">
+  <div class="max-w-4xl mx-auto flex items-center justify-between">
+    <%= link_to "Relay", root_path, class: "text-xl font-bold text-indigo-600" %>
+    <%= link_to "Find a song", search_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+    <div class="flex items-center gap-4">
+      <% if logged_in? %>
+        <%= link_to "History", history_migrations_path, class: "text-sm text-gray-500 hover:text-gray-700" %>
+        <span class="text-sm text-gray-600"><%= current_user.email %></span>
+        <%= button_to "Sign out", session_path, method: :delete, class: "text-sm text-gray-500 hover:text-gray-700" %>
+      <% else %>
+        <%= link_to "Sign in", new_session_path, class: "text-sm text-indigo-600 hover:underline" %>
+        <%= link_to "Sign up",  new_registration_path, class: "text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700" %>
+      <% end %>
+    </div>
+  </div>
+</nav>

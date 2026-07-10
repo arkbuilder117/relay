@@ -1,0 +1,18 @@
+<div class="bg-white border rounded-xl p-5 grid grid-cols-4 gap-4 text-center">
+  <div>
+    <div class="text-2xl font-bold"><%= migration.total_playlists %></div>
+    <div class="text-xs text-gray-500 mt-1">Playlists</div>
+  </div>
+  <div>
+    <div class="text-2xl font-bold"><%= migration.total_tracks %></div>
+    <div class="text-xs text-gray-500 mt-1">Total tracks</div>
+  </div>
+  <div>
+    <div class="text-2xl font-bold text-green-600"><%= migration.matched_tracks %></div>
+    <div class="text-xs text-gray-500 mt-1">Matched</div>
+  </div>
+  <div>
+    <div class="text-2xl font-bold text-red-500"><%= migration.unmatched_tracks %></div>
+    <div class="text-xs text-gray-500 mt-1">Unmatched</div>
+  </div>
+</div>

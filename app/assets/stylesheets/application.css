@@ -1,0 +1,10 @@
+/*
+ * Tailwind CSS via CDN is loaded in the layout for development.
+ * Add tailwindcss-rails gem for production builds.
+ */
+
+/* Card selected state */
+.selected {
+  border-color: #6366f1;
+  background-color: #eef2ff;
+}

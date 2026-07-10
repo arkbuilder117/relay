@@ -1,0 +1,28 @@
+<% content_for :title, "Migration status — Relay" %>
+
+<%= turbo_stream_from "migration_#{@migration.id}" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Migration status</h1>
+  <%= turbo_frame_tag "migration-status" do %>
+    <%= render "migrations/status_badge", migration: @migration %>
+  <% end %>
+</div>
+
+<div class="mb-6">
+  <p class="text-gray-500 text-sm"><%= @presenter.direction_label %></p>
+</div>
+
+<%= turbo_frame_tag "migration-summary" do %>
+  <%= render "migrations/summary", migration: @migration %>
+<% end %>
+
+<div id="playlist-results-list" class="space-y-4 mt-6">
+  <% @playlists.each do |result| %>
+    <%= render "migrations/playlist_result", result: result %>
+  <% end %>
+</div>
+
+<%= turbo_frame_tag "migration-actions" do %>
+  <%= render "migrations/actions", migration: @migration %>
+<% end %>

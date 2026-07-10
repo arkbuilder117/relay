@@ -1,0 +1,44 @@
+<% content_for :title, "Migration history — Relay" %>
+
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Migration history</h1>
+  <%= link_to "New migration", root_path, class: "bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700" %>
+</div>
+
+<% if @migrations.empty? %>
+  <div class="text-center py-16 text-gray-400">
+    <p class="text-lg">No migrations yet.</p>
+    <%= link_to "Start your first migration", root_path, class: "mt-2 inline-block text-indigo-600 hover:underline text-sm" %>
+  </div>
+<% else %>
+  <div class="space-y-3">
+    <% @migrations.each do |migration| %>
+      <% presenter = Presenters::MigrationPresenter.new(migration) %>
+      <div class="bg-white border rounded-xl p-5 hover:border-indigo-300 transition">
+        <div class="flex items-center justify-between">
+          <%= link_to migration_path(migration), class: "flex-1 min-w-0" do %>
+            <div class="font-medium text-gray-900"><%= presenter.direction_label %></div>
+            <div class="text-sm text-gray-400 mt-1"><%= migration.created_at.strftime("%B %-d, %Y at %-I:%M %p") %></div>
+          <% end %>
+          <div class="flex items-center gap-6 ml-6 shrink-0">
+            <% if migration.total_tracks > 0 %>
+              <div class="text-sm text-gray-500">
+                <span class="font-medium text-gray-900"><%= migration.matched_tracks %></span>/<%= migration.total_tracks %> tracks matched
+              </div>
+            <% end %>
+            <% if migration.total_playlists > 0 %>
+              <div class="text-sm text-gray-500">
+                <span class="font-medium text-gray-900"><%= migration.total_playlists %></span> <%= "playlist".pluralize(migration.total_playlists) %>
+              </div>
+            <% end %>
+            <%= render "migrations/status_badge", migration: migration %>
+            <% if migration.status.in?(%w[failed pending]) %>
+              <%= button_to "Retry", retry_migration_path(migration), method: :post,
+                    class: "text-sm text-indigo-600 hover:underline font-medium bg-transparent border-0 cursor-pointer p-0" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,37 @@
+<div id="playlist_result_<%= result.id %>" class="bg-white border rounded-xl p-5">
+  <div class="flex items-center justify-between mb-3">
+    <div class="font-medium"><%= result.name %></div>
+    <% if result.status == "pending" %>
+      <div class="text-sm text-gray-400">Waiting...</div>
+    <% elsif result.status == "failed" %>
+      <div class="text-sm text-red-500" title="<%= result.failure_reason %>">Failed — could not read tracks</div>
+    <% else %>
+      <div class="text-sm text-gray-500">
+        <%= result.matched_count %>/<%= result.total_tracks %> matched
+      </div>
+    <% end %>
+  </div>
+
+  <% unless result.status.in?(%w[pending failed]) %>
+    <% if result.total_tracks > 0 %>
+      <div class="w-full bg-gray-100 rounded-full h-2 mb-3">
+        <div class="bg-green-500 h-2 rounded-full transition-all"
+             style="width: <%= result.match_percentage %>%"></div>
+      </div>
+    <% end %>
+
+    <% unmatched = result.track_results.select(&:unmatched?) %>
+    <% if unmatched.any? %>
+      <details class="text-sm">
+        <summary class="text-red-500 cursor-pointer hover:underline">
+          <%= unmatched.size %> unmatched track<%= "s" if unmatched.size != 1 %>
+        </summary>
+        <ul class="mt-2 space-y-1 pl-4">
+          <% unmatched.each do |track| %>
+            <li class="text-gray-600"><%= track.title %> — <span class="text-gray-400"><%= track.artist %></span></li>
+          <% end %>
+        </ul>
+      </details>
+    <% end %>
+  <% end %>
+</div>

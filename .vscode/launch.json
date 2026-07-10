@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "rdbg",
+      "name": "Rails server",
+      "request": "launch",
+      "script": "bin/rails",
+      "args": ["server"],
+      "askParameters": false,
+      "useTerminal": true,
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "rdbg",
+      "name": "Sidekiq",
+      "request": "launch",
+      "script": "bin/sidekiq",
+      "args": [],
+      "askParameters": false,
+      "useTerminal": true,
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

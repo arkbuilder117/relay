@@ -1,0 +1,53 @@
+<% content_for :title, "Select playlists — Relay" %>
+
+<h1 class="text-2xl font-bold mb-2">Select items to migrate</h1>
+<p class="text-gray-500 mb-6">Choose what to move.</p>
+
+<%= form_with url: migrations_path, method: :post,
+      data: { controller: "playlist" } do |f| %>
+
+  <%= f.hidden_field :direction, value: @direction %>
+
+  <label class="border rounded-xl p-4 flex items-center justify-between mb-6 cursor-pointer hover:border-indigo-400 transition">
+    <div>
+      <div class="font-medium text-sm"><%= @direction == "spotify_to_apple" ? "Liked Songs" : "Favorite Songs" %></div>
+      <div class="text-xs text-gray-400"><%= @direction == "spotify_to_apple" ? "Your saved songs on Spotify" : "Your favorited songs on Apple Music" %></div>
+    </div>
+    <div class="relative inline-flex items-center">
+      <input type="checkbox" name="include_liked_songs" value="1"
+             data-playlist-target="likedSongs"
+             data-action="change->playlist#updateState"
+             class="sr-only peer">
+      <div class="w-10 h-6 bg-gray-200 rounded-full peer peer-checked:bg-indigo-600 after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+    </div>
+  </label>
+
+  <div class="mb-4 text-sm">
+    <button type="button" data-action="click->playlist#toggleAll"
+            data-playlist-target="toggleAll"
+            class="text-indigo-600 hover:underline">Select all</button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+    <% @playlists.each do |playlist| %>
+      <label class="border rounded-xl p-4 cursor-pointer hover:border-indigo-400 transition"
+             data-playlist-target="card">
+        <div class="flex items-start gap-3">
+          <input type="checkbox" name="playlist_ids[]" value="<%= playlist.id %>"
+                 data-playlist-target="checkbox"
+                 data-action="change->playlist#updateState"
+                 class="mt-1 accent-indigo-600">
+          <div>
+            <div class="font-medium text-sm"><%= playlist.name %></div>
+            <div class="text-xs text-gray-400"><%= playlist.track_count %> tracks</div>
+          </div>
+        </div>
+      </label>
+    <% end %>
+  </div>
+
+  <%= f.submit "Start migration →",
+        disabled: true,
+        data: { "playlist-target": "submit", "turbo-submits-with": "Starting..." },
+        class: "bg-indigo-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer" %>
+<% end %>

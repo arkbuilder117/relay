@@ -1,0 +1,74 @@
+<% content_for :title, "Connect accounts — Relay" %>
+
+<h1 class="text-2xl font-bold mb-2">Connect your accounts</h1>
+<p class="text-gray-500 mb-8">Both accounts must be connected before migrating.</p>
+
+<%= turbo_frame_tag "account-connections" do %>
+  <div class="space-y-4 max-w-lg">
+
+    <%# Spotify card %>
+    <div class="border rounded-xl p-5 flex items-center justify-between">
+      <div>
+        <div class="font-semibold">Spotify</div>
+        <% if @spotify_connected %>
+          <div class="text-sm text-green-600">Connected as <%= @spotify_connected.display_name %></div>
+        <% else %>
+          <div class="text-sm text-gray-400">Not connected</div>
+        <% end %>
+      </div>
+      <% unless @spotify_connected %>
+        <%= link_to "Connect Spotify", "/auth/spotify",
+              data: { turbo: false },
+              class: "bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-600" %>
+      <% else %>
+        <div class="flex items-center gap-3">
+          <span class="text-green-600 text-sm font-medium">✓ Connected</span>
+          <%= button_to "Disconnect", auth_spotify_path, method: :delete,
+                class: "text-sm text-gray-400 hover:text-red-500 underline bg-transparent border-0 cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Apple Music card %>
+    <div class="border rounded-xl p-5" data-controller="apple-music"
+         data-apple-music-developer-token-value="<%= @developer_token %>">
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="font-semibold">Apple Music</div>
+          <% if @apple_music_connected %>
+            <div class="text-sm text-green-600">Connected</div>
+          <% else %>
+            <div class="text-sm text-gray-400">Not connected</div>
+          <% end %>
+        </div>
+        <% unless @apple_music_connected %>
+          <button data-apple-music-target="button"
+                  data-action="click->apple-music#authorize"
+                  class="bg-pink-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-pink-600">
+            Connect Apple Music
+          </button>
+        <% else %>
+          <div class="flex items-center gap-3">
+            <span class="text-green-600 text-sm font-medium">✓ Connected</span>
+            <%= button_to "Disconnect", auth_apple_music_path, method: :delete,
+                  class: "text-sm text-gray-400 hover:text-red-500 underline bg-transparent border-0 cursor-pointer" %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= form_with url: auth_apple_music_path, method: :post,
+            data: { "apple-music-target": "form" } do |f| %>
+        <%= f.hidden_field :music_user_token, value: "", data: { "apple-music-target": "tokenField" } %>
+        <%= f.hidden_field :direction, value: @direction %>
+      <% end %>
+    </div>
+
+  </div>
+
+  <% both_connected = @spotify_connected && @apple_music_connected %>
+  <div class="mt-8">
+    <%= link_to "Continue →", playlists_migrations_path(direction: @direction),
+          data: { turbo_frame: "_top" },
+          class: "bg-indigo-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-indigo-700 #{"opacity-40 pointer-events-none" unless both_connected}" %>
+  </div>
+<% end %>

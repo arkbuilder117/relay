@@ -1,0 +1,15 @@
+<% if migration.completed? || migration.failed? %>
+  <div class="mt-8 flex flex-wrap items-center gap-4">
+    <%= link_to "Start another migration", root_path,
+          data: { turbo_frame: "_top" },
+          class: "bg-indigo-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-indigo-700" %>
+    <%= button_to "Disconnect Spotify", auth_spotify_path,
+          method: :delete,
+          class: "bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50",
+          data: { turbo_confirm: "Disconnect your Spotify account?" } %>
+    <%= button_to "Disconnect Apple Music", auth_apple_music_path,
+          method: :delete,
+          class: "bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-50",
+          data: { turbo_confirm: "Disconnect your Apple Music account?" } %>
+  </div>
+<% end %>

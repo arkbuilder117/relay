@@ -1,0 +1,79 @@
+<% content_for :title, "Find a song — Relay" %>
+
+<div class="max-w-3xl mx-auto px-4 py-10">
+  <h1 class="text-2xl font-bold mb-1">Find a song</h1>
+  <p class="text-gray-500 mb-6 text-sm">Search for any track and see which platforms it's on.</p>
+
+  <%= form_with url: search_path, method: :get, local: true do |f| %>
+    <div class="flex gap-2">
+      <%= f.text_field :q, value: @query, placeholder: "Artist, song, or album...",
+            class: "flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500",
+            autofocus: @query.blank? %>
+      <%= f.submit "Search",
+            class: "bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <% if @query.present? %>
+    <div class="mt-8">
+      <% if @results.empty? %>
+        <p class="text-gray-500 text-sm">No results found for "<%= @query %>".</p>
+      <% else %>
+        <p class="text-xs text-gray-400 mb-4"><%= @results.size %> results</p>
+        <div class="space-y-3">
+          <% @results.each do |track| %>
+            <div class="flex items-center gap-4 bg-white border border-gray-200 rounded-xl p-4">
+
+              <%# Artwork %>
+              <% if track.artwork_url.present? %>
+                <img src="<%= track.artwork_url %>" alt="<%= track.album %>"
+                     class="w-14 h-14 rounded-lg object-cover flex-shrink-0">
+              <% else %>
+                <div class="w-14 h-14 rounded-lg bg-gray-100 flex-shrink-0"></div>
+              <% end %>
+
+              <%# Track info %>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-sm truncate"><%= track.title %></span>
+                  <% if track.explicit %>
+                    <span class="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded font-medium flex-shrink-0">E</span>
+                  <% end %>
+                </div>
+                <div class="text-sm text-gray-500 truncate"><%= track.artist %></div>
+                <div class="text-xs text-gray-400 truncate"><%= track.album %></div>
+              </div>
+
+              <%# Duration %>
+              <span class="text-xs text-gray-400 flex-shrink-0"><%= track.duration_formatted %></span>
+
+              <%# Platform links %>
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <% if track.on_spotify? %>
+                  <button data-controller="copy" data-copy-url-value="<%= track.spotify_url %>"
+                          data-action="copy#copy"
+                          class="bg-[#1DB954] text-white text-xs font-medium px-3 py-1.5 rounded-full hover:opacity-90 cursor-pointer">
+                    Spotify
+                  </button>
+                <% else %>
+                  <span class="text-xs text-gray-300 px-3 py-1.5">Not on Spotify</span>
+                <% end %>
+
+                <% if track.on_apple_music? %>
+                  <button data-controller="copy" data-copy-url-value="<%= track.apple_music_url %>"
+                          data-action="copy#copy"
+                          class="bg-[#FC3C44] text-white text-xs font-medium px-3 py-1.5 rounded-full hover:opacity-90 cursor-pointer">
+                    Apple Music
+                  </button>
+                <% else %>
+                  <span class="text-xs text-gray-300 px-3 py-1.5">Not on Apple Music</span>
+                <% end %>
+              </div>
+
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
